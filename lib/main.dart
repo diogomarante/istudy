@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ist_study/screens/main/main_screen.dart';
+import 'package:ist_study/style/colors.dart';
 import 'package:ist_study/style/theme.dart';
 import 'package:ist_study/style/theme_dark.dart';
 
@@ -13,7 +14,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme,
-      home: MainScreen(),
+      home: new Scaffold(
+        body: MainScreen(),
+        backgroundColor: softBlue,
+      ),
     );
   }
 }
