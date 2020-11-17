@@ -13,10 +13,19 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.0
+  firebase_auth: ^0.18.2
+  cloud_firestore: ^0.14.2
+  firebase_messaging: ^7.0.3
+  google_sign_in:
+  http:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_svg: ^0.19.1
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/

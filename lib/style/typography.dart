@@ -49,7 +49,7 @@ TextTheme textTheme = TextTheme(
     color: slate,
   ),
   button: TextStyle(
-    fontSize: 13,
+    fontSize: 17,
     fontWeight: FontWeight.bold,
     color: slate,
   ),

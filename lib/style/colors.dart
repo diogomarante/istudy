@@ -65,3 +65,7 @@ const List<Color> circleColors2 = [
   const Color(0xFF9e42f5),
   const Color(0xFFb642f5),
 ];
+
+const Color cleaned = const Color(0xFF00E070);
+const Color dirty = const Color(0xFFFFC700);
+const Color occupied = const Color(0xFFE98585);

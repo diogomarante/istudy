@@ -5,21 +5,25 @@ import 'package:ist_study/models/study_table.dart';
 class Room {
   final String name;
   final Building building;
-  final List<StudyTable> tables;
+  final int MAX_OCCUPANCY;
+  final int occupancy;
+  List<StudyTable> tables = List<StudyTable>();
   bool favorite;
   int usage = 0;
-  int occupancy;
-  bool full;
 
-  Room(
-      {@required this.name,
-      @required this.building,
-      @required this.tables,
-      @required this.occupancy}) {
-    full = occupancy == tables.length;
-  }
+  Room({
+    @required this.name,
+    @required this.building,
+    @required this.MAX_OCCUPANCY,
+    @required this.occupancy,
+    @required this.favorite,
+  });
 
   void increment() {
     usage++;
+  }
+
+  void addTable(StudyTable table) {
+    tables.add(table);
   }
 }
