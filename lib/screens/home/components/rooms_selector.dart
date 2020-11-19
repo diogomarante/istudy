@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:ist_study/models/building.dart';
 import 'package:ist_study/style/colors.dart';
+import 'dart:math' as math;
 
 class RoomsSelector extends StatelessWidget {
+  final Function onClick;
+  final Building selectedBuilding;
+  final bool active;
+  final bool showingDropdown;
+
+  RoomsSelector({
+    Key key,
+    @required this.onClick,
+    @required this.selectedBuilding,
+    @required this.active,
+    @required this.showingDropdown,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     double width = 332;
@@ -68,36 +83,48 @@ class RoomsSelector extends StatelessWidget {
                 bottomRight: Radius.circular(10),
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
               children: [
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    width: width / 2 - 40,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            "Informática 1",
-                            style: Theme.of(context).textTheme.button,
+                Positioned(
+                  left: 20,
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      width: width / 2 - separatorWidth / 2,
+                      height: height,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            selectedBuilding.name,
+                            style: this.active
+                                ? Theme.of(context)
+                                    .textTheme
+                                    .button
+                                    .copyWith(color: blue)
+                                : Theme.of(context).textTheme.button,
                           ),
-                        ),
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                      ],
+                          // Expanded(
+                          //   child: SizedBox(),
+                          // ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.arrow_drop_down_rounded),
-                  iconSize: 35,
-                  onPressed: () {},
+                Positioned(
+                  right: 0,
+                  child: Transform.rotate(
+                    angle: showingDropdown ? 180 * math.pi / 180 : 0,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_drop_down_rounded,
+                        color: active ? blue : slate,
+                      ),
+                      iconSize: 35,
+                      onPressed: onClick,
+                    ),
+                  ),
                 ),
               ],
             ),

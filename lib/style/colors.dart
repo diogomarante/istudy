@@ -19,7 +19,7 @@ const Color blue = const Color(0xFF009DE0);
 // Light Blues
 const Color lightBlue700 = const Color(0xFFD3DAE0);
 const Color lightBlue600 = const Color(0xFFDDE4E9);
-const Color lightBlue = const Color(0xFFEEF2F5);
+const Color lightBlue = const Color(0xFFE3F7FF);
 const Color softBlue = const Color(0xFFDDF0FF);
 
 // Grays
@@ -28,7 +28,7 @@ const Color gray400 = const Color(0xFF8F95A1);
 const Color gray300 = const Color(0xFFC9CDD4);
 
 // Light Grays
-const Color lightGray = const Color(0xFFDDDDDD);
+const Color lightGray = const Color(0xFFF3F3F3);
 const Color lightGray400 = const Color(0xFFF1F1F1);
 const Color lightGray300 = const Color(0xFFF8F8F8);
 
