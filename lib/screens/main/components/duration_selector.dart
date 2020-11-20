@@ -3,10 +3,12 @@ import 'package:ist_study/style/colors.dart';
 
 class DurationSelector extends StatefulWidget {
   final Function onUpdate;
+  final int seconds;
 
   DurationSelector({
     Key key,
     @required this.onUpdate,
+    @required this.seconds,
   }) : super(key: key);
 
   @override
@@ -14,7 +16,13 @@ class DurationSelector extends StatefulWidget {
 }
 
 class _DurationSelectorState extends State<DurationSelector> {
-  int minutes = 30;
+  int seconds;
+
+  @override
+  initState() {
+    super.initState();
+    seconds = widget.seconds;
+  }
 
   String getDuration(int minutes) {
     switch (minutes) {
@@ -58,16 +66,16 @@ class _DurationSelectorState extends State<DurationSelector> {
 
   @override
   Widget build(BuildContext context) {
+    String selectedDuration = getDuration(seconds ~/ 60);
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
             onTap: () {
-              this.setState(() {
-                minutes = minutes == 30 ? 30 : minutes - 30;
-                widget.onUpdate(minutes == 30 ? 30 : minutes - 30);
-                print(minutes.toString());
+              widget.onUpdate(seconds == 1800 ? 1800 : seconds - 1800);
+              setState(() {
+                seconds = seconds == 1800 ? 1800 : seconds - 1800;
               });
             },
             child: Container(
@@ -75,7 +83,7 @@ class _DurationSelectorState extends State<DurationSelector> {
               width: 47,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: minutes == 30 ? lightBlue : blue,
+                color: seconds == 1800 ? lightBlue : blue,
               ),
               child: Center(
                 child: Text(
@@ -94,7 +102,7 @@ class _DurationSelectorState extends State<DurationSelector> {
             color: lightGray,
             child: Center(
               child: Text(
-                getDuration(minutes),
+                selectedDuration,
                 style: Theme.of(context).textTheme.headline4,
                 textAlign: TextAlign.center,
               ),
@@ -102,11 +110,9 @@ class _DurationSelectorState extends State<DurationSelector> {
           ),
           GestureDetector(
             onTap: () {
-              print("ola");
-              this.setState(() {
-                minutes = minutes == 180 ? 180 : minutes + 30;
-                widget.onUpdate(minutes == 180 ? 180 : minutes + 30);
-                print(minutes.toString());
+              widget.onUpdate(seconds == 10800 ? 10800 : seconds + 1800);
+              setState(() {
+                seconds = seconds == 10800 ? 10800 : seconds + 1800;
               });
             },
             child: Container(
@@ -114,7 +120,7 @@ class _DurationSelectorState extends State<DurationSelector> {
               width: 47,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: minutes == 180 ? lightBlue : blue,
+                color: seconds == 10800 ? lightBlue : blue,
               ),
               child: Center(
                 child: Text(

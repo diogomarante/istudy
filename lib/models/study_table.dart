@@ -9,6 +9,8 @@ class StudyTable {
   String state;
   bool pc;
   Color color;
+  Map<String, dynamic> reservation;
+
   StudyTable(Map<String, dynamic> table, Room room) {
     this.name = table["name"];
     this.room = room;
@@ -19,5 +21,6 @@ class StudyTable {
         : table["state"] == 1
             ? dirty
             : occupied;
+    this.reservation = table["reservation"];
   }
 }

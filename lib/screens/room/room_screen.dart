@@ -100,21 +100,23 @@ class _RoomScreenState extends State<RoomScreen> {
   Widget build(BuildContext context) {
     final cards =
         renderTables(filterTables(widget.room.tables), widget.onClick);
-    return Column(children: [
-      SizedBox(height: 20),
-      RoomNavigator(onBack: widget.onBack),
-      SizedBox(height: 50),
-      RoomInfo(room: widget.room),
-      SizedBox(height: 50),
-      TableFilters(
-          computer: computer,
-          available: available,
-          toggleAvailable: toggleAvailable,
-          toggleComputer: toggleComputer),
-      SizedBox(height: 50),
-      Column(
-        children: cards,
-      )
-    ]);
+    return SingleChildScrollView(
+      child: Column(children: [
+        SizedBox(height: 20),
+        RoomNavigator(onBack: widget.onBack),
+        SizedBox(height: 50),
+        RoomInfo(room: widget.room),
+        SizedBox(height: 50),
+        TableFilters(
+            computer: computer,
+            available: available,
+            toggleAvailable: toggleAvailable,
+            toggleComputer: toggleComputer),
+        SizedBox(height: 50),
+        Column(
+          children: cards,
+        )
+      ]),
+    );
   }
 }

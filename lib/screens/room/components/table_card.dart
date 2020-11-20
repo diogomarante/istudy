@@ -17,7 +17,8 @@ class TableCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 7, left: 7),
       child: GestureDetector(
-        onTap: () => onClick(table),
+        onTap: () =>
+            (table.state == "0" || table.state == "1") ? onClick(table) : () {},
         child: Container(
             height: 131,
             width: 91,
@@ -31,7 +32,8 @@ class TableCard extends StatelessWidget {
               boxShadow: (table.state != "2" && table.state != "3")
                   ? [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
+                        color: Colors.grey.withOpacity(0.4),
+                        offset: Offset(0, 4),
                         spreadRadius: 0,
                         blurRadius: 30,
                       ),

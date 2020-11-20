@@ -7,14 +7,24 @@ class Reservation {
   final Building building;
   final Room room;
   final StudyTable table;
-  int endTime; //in seconds
+  int duration; //in minutes
+  bool checkIn = false;
   Reservation(
       {@required this.building,
       @required this.room,
       @required this.table,
-      @required this.endTime});
+      @required this.duration});
 
   void extend(int seconds) {
-    endTime += seconds;
+    duration += seconds;
+  }
+
+  void checkin() {
+    checkIn = true;
+  }
+
+  int tick() {
+    duration = duration - 1;
+    return duration;
   }
 }
