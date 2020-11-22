@@ -8,10 +8,10 @@ class Campus {
   int dirty = 0;
 
   Campus(
-      {@required this.name, @required List<Map<String, dynamic>> buildings}) {
+      {@required this.name, @required List<Map<String, dynamic>> buildings, @required Function setReservation, @required String istID}) {
     this.name = name;
     for (int i = 0; i < buildings.length; i++) {
-      Building building = Building(building: buildings[i]);
+      Building building = Building(building: buildings[i], setReservation: setReservation, istID: istID);
       this.buildings.add(building);
       this.cleaned += building.cleaned;
       this.dirty += building.dirty;
