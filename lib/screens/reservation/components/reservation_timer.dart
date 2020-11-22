@@ -11,8 +11,11 @@ class ReservationTimer extends StatelessWidget {
   }) : super(key: key);
 
   String buildTimer() {
-    int seconds = reservation.duration % 60;
-    int minutes = reservation.duration ~/ 60;
+    int timer = reservation.checkIn
+        ? reservation.end.difference(DateTime.now()).inSeconds
+        : reservation.duration;
+    int seconds = timer % 60;
+    int minutes = timer ~/ 60;
     int hours = minutes ~/ 60;
     minutes = minutes % 60;
     String builder = "0" +

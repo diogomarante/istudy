@@ -27,7 +27,7 @@ class ReservationInfo extends StatelessWidget {
         children: [
           Expanded(child: SizedBox()),
           Text(
-            reservation.room.name,
+            reservation.table.room.name,
             style: Theme.of(context).textTheme.headline2,
           ),
           Expanded(child: SizedBox()),
@@ -35,7 +35,7 @@ class ReservationInfo extends StatelessWidget {
             reservation.table.name,
             style: Theme.of(context).textTheme.headline1.copyWith(color: blue),
           ),
-          SizedBox(width: 40),
+          SizedBox(width: 70),
           reservation.table.pc
               ? SvgPicture.asset(
                   "assets/images/personal-computer.svg",

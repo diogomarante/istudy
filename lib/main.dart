@@ -14,12 +14,15 @@ import 'package:ist_study/services/fenix_service.dart';
 import 'package:ist_study/style/theme.dart';
 import 'package:ist_study/style/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'models/reservation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await precachePicture(
+      ExactAssetPicture(
+          SvgPicture.svgStringDecoder, 'assets/images/studying.svg'),
+      null);
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -38,13 +41,13 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription _uniLinksSubscription;
   Future<String> fenixToken;
   bool seenOnboarding = true;
-  Reservation reservation;
 
   @override
   void initState() {
     super.initState();
     checkLogin();
     startListener();
+    precacheImage(AssetImage('assets/images/choose_a_place.PNG'), context);
   }
 
   startListener() async {
@@ -99,12 +102,6 @@ class _MyAppState extends State<MyApp> {
     storage.write(key: 'logged_in', value: "false");
   }
 
-  setReservation(Reservation res) {
-    setState(() {
-      reservation = res;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -134,8 +131,6 @@ class _MyAppState extends State<MyApp> {
                           campus: Campus(
                             name: "Alameda",
                             buildings: buildings,
-                            setReservation: setReservation,
-                            istID: user.istID,
                           ),
                           onLogout: onLogout,
                           user: user,

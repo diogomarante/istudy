@@ -14,12 +14,12 @@ class Room {
   int PCs = 0;
   bool pc = false;
 
-  Room(Map<String, dynamic> room, Building building, Function setReservation, String istID) {
+  Room(Map<String, dynamic> room, Building building) {
     this.name = room["name"].toString();
     this.building = building;
     this.maxOccupancy = room["tables"].length;
     for (int i = 0; i < this.maxOccupancy; i++) {
-      StudyTable table = StudyTable(room["tables"][i], this, setReservation, istID);
+      StudyTable table = StudyTable(room["tables"][i], this);
       tables.add(table);
       if (table.dirty == false && table.reservation["istID"] == null) {
         this.cleaned++;

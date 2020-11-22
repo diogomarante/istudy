@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:ist_study/models/fenix_user.dart';
+import 'package:ist_study/models/reservation.dart';
 import 'package:ist_study/models/room.dart';
 import 'package:ist_study/style/colors.dart';
 
@@ -12,16 +13,13 @@ class StudyTable {
   Color color;
   Map<String, dynamic> reservation;
 
-  StudyTable(Map<String, dynamic> table, Room room, Function setReservation, String istID) {
+  StudyTable(Map<String, dynamic> table, Room room) {
     this.name = table["name"];
     this.room = room;
     this.dirty = table["dirty"];
     this.pc = table["hasPc"];
     this.color = getColor(table);
     this.reservation = table["reservation"];
-    if (reservation["istID"] == istID) {
-      setReservation(Reservation(reservation));
-    }
   }
 
   Color getColor(Map<String, dynamic> table) {

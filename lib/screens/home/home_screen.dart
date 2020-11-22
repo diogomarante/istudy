@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ist_study/models/building.dart';
+import 'package:ist_study/models/fenix_user.dart';
 import 'package:ist_study/models/room.dart';
 import 'package:ist_study/screens/home/components/buildings_dropdown.dart';
 import 'package:ist_study/screens/home/components/home_navigator.dart';
 import 'package:ist_study/screens/home/components/room_card.dart';
 import 'package:ist_study/screens/home/components/rooms_selector.dart';
+import 'package:ist_study/style/colors.dart';
 
 class HomeScreen extends StatefulWidget {
   final Building selectedBuilding;
@@ -14,6 +16,7 @@ class HomeScreen extends StatefulWidget {
   final Function onLogout;
   final List<Building> buildings;
   final bool reservation;
+  final FenixUser user;
 
   HomeScreen({
     Key key,
@@ -24,6 +27,7 @@ class HomeScreen extends StatefulWidget {
     @required this.onLogout,
     @required this.buildings,
     @required this.reservation,
+    @required this.user,
   }) : super(key: key);
 
   @override
@@ -85,7 +89,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   reservation: widget.reservation,
                 ),
                 SizedBox(
-                  height: height / 2 - 40,
+                  height: 40,
+                ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 55,
+                      backgroundColor: blue,
+                    ),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: MemoryImage(widget.user.photo),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 40,
                 ),
                 RoomsSelector(
                     onClick: toggleDropdown,

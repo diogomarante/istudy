@@ -15,8 +15,6 @@ class ReservationScreen extends StatelessWidget {
   final Function onCheckIn;
   final Function onBack;
   final int checkInTimer;
-  final bool checkIn;
-  final bool cleaned;
 
   ReservationScreen({
     Key key,
@@ -27,8 +25,6 @@ class ReservationScreen extends StatelessWidget {
     @required this.onCheckIn,
     @required this.onBack,
     @required this.checkInTimer,
-    @required this.checkIn,
-    @required this.cleaned,
   }) : super(key: key);
 
   @override
@@ -41,15 +37,117 @@ class ReservationScreen extends StatelessWidget {
       SizedBox(height: 50),
       ReservationTimer(reservation: reservation),
       SizedBox(height: 50),
-      !checkIn ? CheckInTimer(timer: checkInTimer) : Container(),
-      SizedBox(height: 50),
+      Padding(
+        padding: const EdgeInsets.only(left: 40, right: 40),
+        child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
+                children: [
+                  TextSpan(text: "Scan ", style: TextStyle(color: blue)),
+                  TextSpan(
+                    text: "the QR code on  ",
+                  ),
+                  TextSpan(
+                      text: "table " + reservation.table.name,
+                      style: TextStyle(color: blue)),
+                  TextSpan(
+                    text: " to ",
+                  ),
+                  TextSpan(
+                      text: !reservation.checkIn ? "check-in" : "extend",
+                      style: TextStyle(color: blue)),
+                  TextSpan(text: !reservation.checkIn ? "." : " your session."),
+                ])),
+      ),
+      Expanded(child: SizedBox()),
+      Stack(
+        alignment: Alignment.center,
+        children: [
+          Opacity(
+            opacity: (reservation.table.dirty && !reservation.checkIn) ||
+                    (reservation.checkIn && reservation.duration > 1800)
+                ? 0.5
+                : 1,
+            child: Container(
+              height: 150.0,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/scan.PNG'),
+                  fit: BoxFit.fitHeight,
+                ),
+              ),
+            ),
+          ),
+          reservation.table.dirty && !reservation.checkIn
+              ? CircularProgressIndicator()
+              : Container(),
+        ],
+      ),
+      Expanded(child: SizedBox()),
+      !reservation.checkIn
+          ? reservation.table.dirty
+              ? Text(
+                  "Please wait until your table is cleaned.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                )
+              : Column(
+                  children: [
+                    Text(
+                      "Check-in expires in:",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CheckInTimer(timer: checkInTimer),
+                  ],
+                )
+          : Padding(
+              padding: const EdgeInsets.only(left: 40, right: 40),
+              child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "You may  ",
+                        ),
+                        TextSpan(
+                            text: "extend ", style: TextStyle(color: blue)),
+                        TextSpan(
+                          text: " to ",
+                        ),
+                        TextSpan(
+                            text:
+                                "your session when there are 30 minutes left on the timer."),
+                      ])),
+            ),
+      Expanded(child: SizedBox()),
       Buttons(
           reservation: reservation,
           onCancel: onCancel,
           onCheckout: onCheckout,
           onExtend: onExtend,
           onCheckIn: onCheckIn,
-          checkIn: checkIn),
+          checkIn: reservation.checkIn),
+      SizedBox(height: 40),
     ]);
   }
 }
