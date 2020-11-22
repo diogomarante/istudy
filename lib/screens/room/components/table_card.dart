@@ -18,38 +18,37 @@ class TableCard extends StatelessWidget {
       padding: const EdgeInsets.only(right: 7, left: 7),
       child: GestureDetector(
         onTap: () =>
-            (table.state == "0" || table.state == "1") ? onClick(table) : () {},
+            table.reservation["istID"] == null ? onClick(table) : () {},
         child: Container(
             height: 131,
             width: 91,
             decoration: BoxDecoration(
-              color: (table.state != "2" && table.state != "3")
+              color: table.reservation["istID"] == null
                   ? Colors.white
                   : Colors.white.withOpacity(0.5),
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
               ),
-              boxShadow: (table.state != "2" && table.state != "3")
+              boxShadow: table.reservation["istID"] == null
                   ? [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.4),
                         offset: Offset(0, 4),
-                        spreadRadius: 0,
-                        blurRadius: 30,
+                        spreadRadius: 4,
+                        blurRadius: 10,
                       ),
                     ]
                   : [],
             ),
             child: Column(children: [
               SizedBox(height: 20),
-              Text(table.name.substring(table.name.length - 1),
-                  style: Theme.of(context).textTheme.headline2),
+              Text(table.name, style: Theme.of(context).textTheme.headline2),
               SizedBox(height: 10),
               table.pc
                   ? SvgPicture.asset(
                       "assets/images/personal-computer.svg",
                       height: 30,
-                      color: (table.state == "0" || table.state == "1")
+                      color: table.reservation["istID"] == null
                           ? blue
                           : Colors.grey,
                     )

@@ -11,6 +11,7 @@ class HomeScreen extends StatefulWidget {
   final Function onSwitch;
   final Function onRoomSelect;
   final Function onTogglePage;
+  final Function onLogout;
   final List<Building> buildings;
   final bool reservation;
 
@@ -20,6 +21,7 @@ class HomeScreen extends StatefulWidget {
     @required this.onSwitch,
     @required this.onRoomSelect,
     @required this.onTogglePage,
+    @required this.onLogout,
     @required this.buildings,
     @required this.reservation,
   }) : super(key: key);
@@ -79,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 20),
                 HomeNavigator(
                   onClick: widget.onTogglePage,
+                  onLogout: widget.onLogout,
                   reservation: widget.reservation,
                 ),
                 SizedBox(

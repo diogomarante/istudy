@@ -45,7 +45,7 @@ class _RoomScreenState extends State<RoomScreen> {
       if (computer && !tables[i].pc) {
         continue;
       }
-      if (available && !(tables[i].state == "0" || tables[i].state == "1")) {
+      if (available && tables[i].reservation["istID"] != null) {
         continue;
       }
       filteredTables.add(tables[i]);
@@ -112,7 +112,7 @@ class _RoomScreenState extends State<RoomScreen> {
             available: available,
             toggleAvailable: toggleAvailable,
             toggleComputer: toggleComputer),
-        SizedBox(height: 50),
+        SizedBox(height: 30),
         Column(
           children: cards,
         )

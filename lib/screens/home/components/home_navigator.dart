@@ -4,10 +4,13 @@ import 'dart:math' as math;
 
 class HomeNavigator extends StatelessWidget {
   final Function onClick;
+  final Function onLogout;
   final bool reservation;
+
   HomeNavigator({
     Key key,
     @required this.onClick,
+    @required this.onLogout,
     @required this.reservation,
   }) : super(key: key);
 
@@ -17,7 +20,7 @@ class HomeNavigator extends StatelessWidget {
       padding: const EdgeInsets.only(right: 30, left: 30),
       child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
         GestureDetector(
-          onTap: onClick,
+          onTap: onLogout,
           child: Text(
             "logout",
             style: Theme.of(context).textTheme.headline4.copyWith(color: blue),

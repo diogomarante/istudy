@@ -32,10 +32,10 @@ class ConfirmBooking extends StatelessWidget {
             ),
             RichText(
               textAlign: TextAlign.center,
-              text: new TextSpan(
+              text: TextSpan(
                 // Note: Styles for TextSpans must be explicitly defined.
                 // Child text spans will inherit styles from parent
-                style: new TextStyle(
+                style: TextStyle(
                   fontSize: 14.0,
                   color: Colors.black,
                 ),

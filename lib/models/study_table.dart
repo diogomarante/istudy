@@ -1,26 +1,36 @@
 import 'dart:ui';
 
+import 'package:ist_study/models/fenix_user.dart';
 import 'package:ist_study/models/room.dart';
 import 'package:ist_study/style/colors.dart';
 
 class StudyTable {
   String name;
   Room room;
-  String state;
+  bool dirty;
   bool pc;
   Color color;
   Map<String, dynamic> reservation;
 
-  StudyTable(Map<String, dynamic> table, Room room) {
+  StudyTable(Map<String, dynamic> table, Room room, Function setReservation, String istID) {
     this.name = table["name"];
     this.room = room;
-    this.state = table["state"].toString();
+    this.dirty = table["dirty"];
     this.pc = table["hasPc"];
-    this.color = table["state"] == 0
-        ? cleaned
-        : table["state"] == 1
-            ? dirty
-            : occupied;
+    this.color = getColor(table);
     this.reservation = table["reservation"];
+    if (reservation["istID"] == istID) {
+      setReservation(Reservation(reservation));
+    }
+  }
+
+  Color getColor(Map<String, dynamic> table) {
+    if (table["reservation"]["istID"] != null) {
+      return occupiedColor;
+    }
+    if (table["dirty"]) {
+      return dirtyColor;
+    }
+    return cleanedColor;
   }
 }

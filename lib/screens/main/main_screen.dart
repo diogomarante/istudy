@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ist_study/models/building.dart';
 import 'package:ist_study/models/campus.dart';
+import 'package:ist_study/models/fenix_user.dart';
 import 'package:ist_study/models/reservation.dart';
 import 'package:ist_study/models/room.dart';
 import 'package:ist_study/models/study_table.dart';
@@ -16,10 +17,14 @@ import 'package:qrscan/qrscan.dart' as scanner;
 
 class MainScreen extends StatefulWidget {
   final Campus campus;
+  final Function onLogout;
+  final FenixUser user;
 
   MainScreen({
     Key key,
     @required this.campus,
+    @required this.onLogout,
+    @required this.user,
   }) : super(key: key);
 
   _MainScreenState createState() => _MainScreenState();
@@ -40,7 +45,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
-    print("yo");
     super.initState();
     this.selectedBuilding = "rnl";
   }
@@ -103,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
         builder: (BuildContext context) {
           return ConfirmCancel(
             type: "checkout",
-            onClick: cancelReservation,
+            onClick: checkout,
           );
         });
   }
@@ -114,7 +118,10 @@ class _MainScreenState extends State<MainScreen> {
         builder: (BuildContext context) {
           return ConfirmCancel(
             type: "switch",
-            onClick: () => confirmBooking(table),
+            onClick: () {
+              cancelReservation();
+              confirmBooking(table);
+            },
           );
         });
   }
@@ -162,10 +169,27 @@ class _MainScreenState extends State<MainScreen> {
   void makeReservation() async {
     // String cameraScanResult = await scanner.scan();
     // print(cameraScanResult);
-    print(selectedTable.name);
-    updateFB(buildFBReseravtion(null, null, null, null), 3, selectedTable);
+    Map<String, dynamic> res = buildFBReservation(
+        seconds,
+        Timestamp.fromDate(DateTime.now()),
+        Timestamp.fromDate(DateTime.now().add(Duration(seconds: seconds))),
+        widget.user.istID,
+        false);
 
-    if (selectedTable.state == "0") {
+    print("res");
+    print(res);
+    print(widget.user.istID);
+    updateFB(
+        buildFBReservation(
+            seconds,
+            Timestamp.fromDate(DateTime.now()),
+            Timestamp.fromDate(DateTime.now().add(Duration(seconds: seconds))),
+            widget.user.istID,
+            false),
+        selectedTable.dirty,
+        selectedTable);
+
+    if (selectedTable.dirty == false) {
       startCheckInTimer();
     }
 
@@ -181,15 +205,27 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void extendReservation() {
-    updateFB(buildFBReseravtion(null, null, null, null), 4, reservation.table);
+    print(reservation.table.reservation);
+    updateFB(
+        buildFBReservation(
+            reservation.duration,
+            reservation.table.reservation["initTime"],
+            Timestamp.fromDate(
+                (reservation.table.reservation["initTime"] as Timestamp)
+                    .toDate()
+                    .add(Duration(seconds: reservation.duration))),
+            widget.user.istID,
+            false),
+        true,
+        reservation.table);
     this.setState(() {
       reservation.extend(seconds);
     });
   }
 
-  //TODO how do i knwo what was the state before?
   void cancelReservation() {
-    updateFB(buildFBReseravtion(null, null, null, null), 1, reservation.table);
+    updateFB(buildFBReservation(null, null, null, null, false),
+        reservation.table.dirty, reservation.table);
     this.setState(() {
       reservation = null;
       selectedRoom = null;
@@ -201,7 +237,16 @@ class _MainScreenState extends State<MainScreen> {
   void checkIn() async {
     // String cameraScanResult = await scanner.scan();
     // print(cameraScanResult);
-    updateFB(buildFBReseravtion(null, null, null, null), 4, reservation.table);
+    updateFB(
+        buildFBReservation(
+            reservation.duration,
+            Timestamp.fromDate(DateTime.now()),
+            Timestamp.fromDate(
+                DateTime.now().add(Duration(seconds: reservation.duration))),
+            widget.user.istID,
+            true),
+        true,
+        reservation.table);
     this.setState(() {
       reservation.checkin();
       checkedIn = true;
@@ -211,14 +256,12 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void checkout() {
-    updateFB(
-        buildFBReseravtion(null, null, null, "toma"), 1, reservation.table);
+    updateFB(buildFBReservation(null, null, null, null, false), true,
+        reservation.table);
     this.setState(() {
       reservation = null;
       selectedRoom = null;
       selectedPage = "home";
-      selectedTable.state = "1";
-      selectedTable.color = dirty;
       selectedTable = null;
     });
   }
@@ -240,7 +283,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void startCheckInTimer() {
     Timer.periodic(Duration(seconds: 1), (timer) {
-      if (checkInTimer == 0) {
+      if (checkInTimer == 0 || reservation == null) {
         if (!checkedIn) cancelReservation();
         timer.cancel();
         this.setState(() {
@@ -255,6 +298,12 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(checkInTimer);
+    if (reservation != null &&
+        !reservation.table.reservation["checked"] &&
+        !reservation.table.dirty &&
+        checkInTimer == 900) startCheckInTimer();
+
     return (reservation != null && selectedPage == "reservation")
         ? ReservationScreen(
             reservation: reservation,
@@ -277,60 +326,63 @@ class _MainScreenState extends State<MainScreen> {
                 onSwitch: switchBuilding,
                 onRoomSelect: selectRoom,
                 onTogglePage: togglePage,
+                onLogout: widget.onLogout,
                 buildings: widget.campus.buildings,
                 reservation: reservation != null,
               );
   }
 
   Map<String, dynamic> buildFBRoom(
-      String name, List<Map<String, dynamic>> tables) {
+      String name, List<Map<String, dynamic>> tables, List<String> favorites) {
     return {
       'name': name,
       'tables': tables,
+      'favorites': favorites,
     };
   }
 
   Map<String, dynamic> buildFBTable(
-      bool hasPc, String name, Map<String, dynamic> res, int state) {
+      bool hasPc, String name, Map<String, dynamic> res, bool dirty) {
     return {
+      'dirty': dirty,
       'hasPc': hasPc,
       'name': name,
       'reservation': res,
-      'state': state,
     };
   }
 
-  Map<String, dynamic> buildFBReseravtion(
-      int duration, Timestamp endTime, Timestamp initTime, String istID) {
+  Map<String, dynamic> buildFBReservation(int duration, Timestamp endTime,
+      Timestamp initTime, String istID, bool checked) {
     return {
       'duration': duration,
+      'istID': istID,
+      'checked': checked,
       'endTime': endTime,
       'initTime': initTime,
-      'istID': istID,
     };
   }
 
-  void updateFB(Map<String, dynamic> newRes, int state, StudyTable argtable) {
+  void updateFB(Map<String, dynamic> newRes, bool dirty, StudyTable argtable) {
     List<Map<String, dynamic>> updatedRooms = List<Map<String, dynamic>>();
     for (Room room in argtable.room.building.rooms) {
       List<Map<String, dynamic>> updatedTables = List<Map<String, dynamic>>();
       for (StudyTable table in room.tables) {
         Map<String, dynamic> updatedRes;
-        int updatedState;
+        bool updatedDirty;
         if ((argtable.name == table.name) &&
             (argtable.room.name == room.name)) {
           updatedRes = newRes;
-          updatedState = state;
+          updatedDirty = dirty;
         } else {
           updatedRes = table.reservation;
-          updatedState = int.parse(table.state);
+          updatedDirty = table.dirty;
         }
         updatedTables
-            .add(buildFBTable(table.pc, table.name, updatedRes, updatedState));
+            .add(buildFBTable(table.pc, table.name, updatedRes, updatedDirty));
       }
-      updatedRooms.add(buildFBRoom(room.name, updatedTables));
+      updatedRooms.add(buildFBRoom(room.name, updatedTables, room.favorites));
     }
-    FirebaseFirestore.instance.collection("tecnico1").get().then((docs) {
+    FirebaseFirestore.instance.collection("tecnico4").get().then((docs) {
       for (var doc in docs.docs) {
         if (doc.data()["name"] == argtable.room.building.name) {
           doc.reference.update({

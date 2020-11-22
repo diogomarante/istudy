@@ -21,6 +21,7 @@ const Color lightBlue700 = const Color(0xFFD3DAE0);
 const Color lightBlue600 = const Color(0xFFDDE4E9);
 const Color lightBlue = const Color(0xFFE3F7FF);
 const Color softBlue = const Color(0xFFDDF0FF);
+const Color backgroundColor = const Color(0xFFEEF2F5);
 
 // Grays
 const Color gray = const Color(0xFF7177820);
@@ -66,6 +67,6 @@ const List<Color> circleColors2 = [
   const Color(0xFFb642f5),
 ];
 
-const Color cleaned = const Color(0xFF00E070);
-const Color dirty = const Color(0xFFFFC700);
-const Color occupied = const Color(0xFFE98585);
+const Color cleanedColor = const Color(0xFF00E070);
+const Color dirtyColor = const Color(0xFFFFC700);
+const Color occupiedColor = const Color(0xFFE98585);

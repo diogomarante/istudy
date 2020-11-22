@@ -35,7 +35,7 @@ class BuildingsDropdown extends StatelessWidget {
               width: 27,
               alignment: Alignment(0.0, 0.0),
               decoration: BoxDecoration(
-                color: cleaned,
+                color: cleanedColor,
                 borderRadius: BorderRadius.all(
                   Radius.circular(5),
                 ),
@@ -53,7 +53,7 @@ class BuildingsDropdown extends StatelessWidget {
               width: 27,
               alignment: Alignment(0.0, 0.0),
               decoration: BoxDecoration(
-                color: dirty,
+                color: dirtyColor,
                 borderRadius: BorderRadius.all(
                   Radius.circular(5),
                 ),
