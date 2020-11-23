@@ -23,7 +23,7 @@ class ConfirmBooking extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       content: Container(
-        height: 240,
+        height: 260,
         width: 500,
         child: Column(
           children: [
@@ -100,6 +100,15 @@ class ConfirmBooking extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+            SizedBox(height: 20),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Text("close",
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      .copyWith(color: blue)),
             ),
           ],
         ),

@@ -23,6 +23,9 @@ Future<void> main() async {
       ExactAssetPicture(
           SvgPicture.svgStringDecoder, 'assets/images/studying.svg'),
       null);
+  await precachePicture(
+      ExactAssetPicture(SvgPicture.svgStringDecoder, 'assets/images/books.svg'),
+      null);
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -41,6 +44,8 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription _uniLinksSubscription;
   Future<String> fenixToken;
   bool seenOnboarding = false;
+  bool ready = false;
+  Timer timer;
 
   @override
   void initState() {
@@ -48,6 +53,17 @@ class _MyAppState extends State<MyApp> {
     checkLogin();
     startListener();
     precacheImage(AssetImage('assets/images/choose_a_place.PNG'), context);
+    timer = Timer(
+        Duration(seconds: 2),
+        () => setState(() {
+              ready = true;
+            }));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (timer != null) timer.cancel();
   }
 
   startListener() async {
@@ -121,21 +137,23 @@ class _MyAppState extends State<MyApp> {
           theme: theme,
           home: new Scaffold(
             body: SafeArea(
-              child: seenOnboarding ?? false
-                  ? user != null
-                      ? MainScreen(
-                          campus: Campus(
-                            name: "Alameda",
-                            buildings: buildings,
-                            user: user,
-                          ),
-                          onLogout: onLogout,
-                          user: user,
-                        )
-                      : Center(child: CircularProgressIndicator())
-                  : OnboardingScreen(
-                      onFinish: onFinishOnboarding,
-                    ),
+              child: !ready
+                  ? Center(child: CircularProgressIndicator())
+                  : seenOnboarding ?? false
+                      ? user != null
+                          ? MainScreen(
+                              campus: Campus(
+                                name: "Alameda",
+                                buildings: buildings,
+                                user: user,
+                              ),
+                              onLogout: onLogout,
+                              user: user,
+                            )
+                          : Center(child: CircularProgressIndicator())
+                      : OnboardingScreen(
+                          onFinish: onFinishOnboarding,
+                        ),
             ),
             backgroundColor: backgroundColor,
           ),

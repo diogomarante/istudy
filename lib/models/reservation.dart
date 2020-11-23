@@ -15,9 +15,4 @@ class Reservation {
     checkIn = res["checked"];
     end = (res["endTime"] as Timestamp).toDate();
   }
-
-  int tick() {
-    duration = duration - 1;
-    return duration;
-  }
 }

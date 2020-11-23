@@ -53,9 +53,8 @@ class _RoomScreenState extends State<RoomScreen> {
       filteredTables.add(tables[i]);
     }
 
-    filteredTables.sort((a, b) =>
-        (int.parse(a.name.substring(a.name.length - 1))
-            .compareTo(int.parse(b.name.substring(b.name.length - 1)))));
+    filteredTables
+        .sort((a, b) => (int.parse(a.name).compareTo(int.parse(b.name))));
     return filteredTables;
   }
 

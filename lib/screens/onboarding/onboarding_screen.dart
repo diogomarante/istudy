@@ -42,9 +42,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 60),
+              Expanded(child: SizedBox()),
               pages[currentPage].image,
-              SizedBox(height: 50),
+              Expanded(child: SizedBox()),
               Text(
                 pages[currentPage].title,
                 style:
@@ -55,7 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ? SizedBox(height: 10)
                   : Text("step " + pages[currentPage].step.toString(),
                       style: Theme.of(context).textTheme.headline5),
-              SizedBox(height: 30),
+              Expanded(child: SizedBox()),
               Padding(
                 padding: const EdgeInsets.only(left: 50, right: 50),
                 child: pages[currentPage].description,
@@ -72,7 +72,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                     ),
-              SizedBox(height: 30),
+              Expanded(child: SizedBox()),
               edgePage
                   ? Expanded(
                       child: Align(
@@ -102,7 +102,7 @@ List<Page> pages = [
   Page(
     image: SvgPicture.asset(
       "assets/images/studying.svg",
-      height: 250,
+      height: 200,
     ),
     title: "Welcome to ISTudy",
     description: RichText(
@@ -321,7 +321,7 @@ List<Page> pages = [
   Page(
     image: SvgPicture.asset(
       "assets/images/studying.svg",
-      height: 250,
+      height: 200,
     ),
     title: "One last thing...",
     description: Column(

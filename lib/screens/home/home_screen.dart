@@ -6,6 +6,7 @@ import 'package:ist_study/screens/home/components/buildings_dropdown.dart';
 import 'package:ist_study/screens/home/components/home_navigator.dart';
 import 'package:ist_study/screens/home/components/room_card.dart';
 import 'package:ist_study/screens/home/components/rooms_selector.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ist_study/style/colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -107,26 +108,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   onClick: widget.onTogglePage,
                   onLogout: widget.onLogout,
                   reservation: widget.reservation,
+                  photo: widget.user.photo,
                 ),
                 SizedBox(
                   height: 40,
                 ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 55,
-                      backgroundColor: blue,
-                    ),
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.transparent,
-                      backgroundImage: MemoryImage(widget.user.photo),
-                    ),
-                  ],
+                SvgPicture.asset(
+                  "assets/images/books.svg",
+                  height: 200,
                 ),
                 SizedBox(
-                  height: 40,
+                  height: 20,
+                ),
+                Text("Where would you like to study?",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: blue,
+                    )),
+                SizedBox(
+                  height: 30,
                 ),
                 RoomsSelector(
                     onClick: toggleDropdown,

@@ -63,11 +63,11 @@ class Buttons extends StatelessWidget {
           width: 120,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: !checkIn
+            color: !checkIn && !reservation.table.dirty
                 ? blue
                 : reservation.duration < 1800
                     ? blue
-                    : blue.withOpacity(0.6),
+                    : blue.withOpacity(0.2),
             boxShadow: !checkIn
                 ? [
                     BoxShadow(

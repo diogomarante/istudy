@@ -37,7 +37,7 @@ class ConfirmCancel extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       content: Container(
-        height: type == "switch" ? 200 : 180,
+        height: type == "switch" ? 220 : 200,
         width: 500,
         child: Column(
           children: [
@@ -105,6 +105,15 @@ class ConfirmCancel extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+            SizedBox(height: 20),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Text("close",
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      .copyWith(color: blue)),
             ),
           ],
         ),

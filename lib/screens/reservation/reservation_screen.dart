@@ -30,40 +30,60 @@ class ReservationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      SizedBox(height: 20),
+      Expanded(child: SizedBox()),
       ReservationNavigator(onBack: onBack),
-      SizedBox(height: 50),
+      Expanded(child: SizedBox()),
       ReservationInfo(reservation: reservation),
-      SizedBox(height: 50),
+      Expanded(child: SizedBox()),
       ReservationTimer(reservation: reservation),
-      SizedBox(height: 50),
-      Padding(
-        padding: const EdgeInsets.only(left: 40, right: 40),
-        child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                ),
-                children: [
-                  TextSpan(text: "Scan ", style: TextStyle(color: blue)),
-                  TextSpan(
-                    text: "the QR code on  ",
-                  ),
-                  TextSpan(
-                      text: "table " + reservation.table.name,
-                      style: TextStyle(color: blue)),
-                  TextSpan(
-                    text: " to ",
-                  ),
-                  TextSpan(
-                      text: !reservation.checkIn ? "check-in" : "extend",
-                      style: TextStyle(color: blue)),
-                  TextSpan(text: !reservation.checkIn ? "." : " your session."),
-                ])),
-      ),
+      Expanded(child: SizedBox()),
+      !reservation.checkIn && reservation.table.dirty
+          ? Padding(
+              padding: const EdgeInsets.only(left: 40, right: 40),
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                    children: [
+                      TextSpan(
+                          text: "Wait until your table is cleaned.",
+                          style: TextStyle(color: dirtyColor)),
+                    ]),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.only(left: 40, right: 40),
+              child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                      children: [
+                        TextSpan(text: "Scan ", style: TextStyle(color: blue)),
+                        TextSpan(
+                          text: "the QR code on  ",
+                        ),
+                        TextSpan(
+                            text: "table " + reservation.table.name,
+                            style: TextStyle(color: blue)),
+                        TextSpan(
+                          text: " to ",
+                        ),
+                        TextSpan(
+                            text: !reservation.checkIn ? "check-in" : "extend",
+                            style: TextStyle(color: blue)),
+                        TextSpan(
+                            text:
+                                !reservation.checkIn ? "." : " your session."),
+                      ])),
+            ),
       Expanded(child: SizedBox()),
       Stack(
         alignment: Alignment.center,
@@ -71,7 +91,7 @@ class ReservationScreen extends StatelessWidget {
           Opacity(
             opacity: (reservation.table.dirty && !reservation.checkIn) ||
                     (reservation.checkIn && reservation.duration > 1800)
-                ? 0.5
+                ? 0.1
                 : 1,
             child: Container(
               height: 150.0,
@@ -92,7 +112,7 @@ class ReservationScreen extends StatelessWidget {
       !reservation.checkIn
           ? reservation.table.dirty
               ? Text(
-                  "Please wait until your table is cleaned.",
+                  "Talk to a staff member for more info.",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

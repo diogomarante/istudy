@@ -48,11 +48,33 @@ class _MainScreenState extends State<MainScreen> {
   int seconds = 1800;
   int checkInTimer = 900;
   String selectedPage;
+  Timer chTimer;
+  Timer resTimer;
 
   @override
   void initState() {
     super.initState();
     this.selectedBuilding = "rnl";
+    if (widget.reservation != null &&
+        !widget.reservation.table.reservation["checked"] &&
+        !widget.reservation.table.dirty &&
+        checkInTimer == 900) {
+      selectedPage = "reservation";
+      chTimer = startCheckInTimer();
+    }
+    if (widget.reservation != null &&
+        widget.reservation.table.reservation["checked"]) {
+      selectedPage = "reservation";
+
+      resTimer = startReservationTimer();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    chTimer.cancel();
+    resTimer.cancel();
   }
 
   void switchBuilding(Building building) {
@@ -186,9 +208,9 @@ class _MainScreenState extends State<MainScreen> {
         selectedTable.dirty,
         selectedTable);
 
-    if (selectedTable.dirty == false) {
-      startCheckInTimer();
-    }
+    // if (selectedTable.dirty == false) {
+    //   startCheckInTimer();
+    // }
 
     this.setState(() {
       selectedPage = "reservation";
@@ -199,14 +221,14 @@ class _MainScreenState extends State<MainScreen> {
   void extendReservation() {
     updateFB(
         buildFBReservation(
-            widget.reservation.duration,
+            widget.reservation.duration + seconds,
             Timestamp.fromDate(
-                (widget.reservation.table.reservation["initTime"] as Timestamp)
+                (widget.reservation.table.reservation["endTime"] as Timestamp)
                     .toDate()
-                    .add(Duration(seconds: widget.reservation.duration))),
+                    .add(Duration(seconds: seconds))),
             widget.reservation.table.reservation["initTime"],
             widget.user.istID,
-            false),
+            true),
         true,
         widget.reservation.table);
   }
@@ -232,7 +254,7 @@ class _MainScreenState extends State<MainScreen> {
             true),
         true,
         widget.reservation.table);
-    startReservationTimer(seconds);
+    startReservationTimer();
   }
 
   void checkout() {
@@ -246,23 +268,23 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void startReservationTimer(int seconds) {
-    Timer.periodic(Duration(seconds: 1), (timer) {
+  Timer startReservationTimer() {
+    return Timer.periodic(Duration(seconds: 1), (timer) {
       if (widget.reservation == null) {
         timer.cancel();
         return;
       }
-      setState(() {
-        if (widget.reservation.tick() == 0) {
-          cancelReservation();
-          timer.cancel();
-        }
-      });
+
+      if (widget.reservation.duration == 0) {
+        cancelReservation();
+        timer.cancel();
+      }
+      setState(() {});
     });
   }
 
-  void startCheckInTimer() {
-    Timer.periodic(Duration(seconds: 1), (timer) {
+  Timer startCheckInTimer() {
+    return Timer.periodic(Duration(seconds: 1), (timer) {
       if (widget.reservation != null &&
           !widget.reservation.checkIn &&
           checkInTimer == 0) {
@@ -286,11 +308,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.reservation != null &&
-        !widget.reservation.table.reservation["checked"] &&
-        !widget.reservation.table.dirty &&
-        checkInTimer == 900) startCheckInTimer();
-
     return (widget.reservation != null && selectedPage == "reservation")
         ? ReservationScreen(
             reservation: widget.reservation,
