@@ -1,7 +1,4 @@
 import 'dart:ui';
-
-import 'package:ist_study/models/fenix_user.dart';
-import 'package:ist_study/models/reservation.dart';
 import 'package:ist_study/models/room.dart';
 import 'package:ist_study/style/colors.dart';
 

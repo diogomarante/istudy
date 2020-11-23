@@ -13,9 +13,7 @@ import 'package:ist_study/screens/onboarding/onboarding_screen.dart';
 import 'package:ist_study/services/fenix_service.dart';
 import 'package:ist_study/style/theme.dart';
 import 'package:ist_study/style/colors.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'models/reservation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,6 +62,7 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     super.dispose();
     if (timer != null) timer.cancel();
+    if (_uniLinksSubscription != null) _uniLinksSubscription.cancel();
   }
 
   startListener() async {

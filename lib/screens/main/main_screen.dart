@@ -12,7 +12,6 @@ import 'package:ist_study/screens/main/components/confirm_booking.dart';
 import 'package:ist_study/screens/main/components/confirm_cancel.dart';
 import 'package:ist_study/screens/reservation/reservation_screen.dart';
 import 'package:ist_study/screens/room/room_screen.dart';
-import 'package:ist_study/style/colors.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
 class MainScreen extends StatefulWidget {
@@ -195,9 +194,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void makeReservation() async {
-    // String cameraScanResult = await scanner.scan();
-    // print(cameraScanResult);
-
+    //String cameraScanResult = await scanner.scan();
+    await scanner.scan();
     updateFB(
         buildFBReservation(
             seconds,

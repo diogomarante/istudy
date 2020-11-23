@@ -29,6 +29,7 @@ class Building {
         return rooms[i];
       }
     }
+    return null;
   }
 
   addRoom(Room room) {
