@@ -6,6 +6,7 @@ import 'package:ist_study/screens/reservation/components/reservation_info.dart';
 import 'package:ist_study/screens/reservation/components/reservation_timer.dart';
 import 'package:ist_study/style/colors.dart';
 import 'components/reservation_navigator.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ReservationScreen extends StatelessWidget {
   final Reservation reservation;
@@ -85,29 +86,26 @@ class ReservationScreen extends StatelessWidget {
                       ])),
             ),
       Expanded(child: SizedBox()),
-      Stack(
-        alignment: Alignment.center,
-        children: [
-          Opacity(
-            opacity: (reservation.table.dirty && !reservation.checkIn) ||
-                    (reservation.checkIn && reservation.duration > 1800)
-                ? 0.1
-                : 1,
-            child: Container(
-              height: 150.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/scan.PNG'),
-                  fit: BoxFit.fitHeight,
+      reservation.table.dirty && !reservation.checkIn
+          ? SvgPicture.asset(
+              "assets/images/cleaning.svg",
+              height: 150,
+            )
+          : Opacity(
+              opacity: (reservation.table.dirty && !reservation.checkIn) ||
+                      (reservation.checkIn && reservation.duration > 1800)
+                  ? 0.1
+                  : 1,
+              child: Container(
+                height: 150.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/scan.PNG'),
+                    fit: BoxFit.fitHeight,
+                  ),
                 ),
               ),
             ),
-          ),
-          reservation.table.dirty && !reservation.checkIn
-              ? CircularProgressIndicator()
-              : Container(),
-        ],
-      ),
       Expanded(child: SizedBox()),
       !reservation.checkIn
           ? reservation.table.dirty
