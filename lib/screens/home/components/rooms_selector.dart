@@ -5,6 +5,7 @@ import 'dart:math' as math;
 
 class RoomsSelector extends StatelessWidget {
   final Function onClick;
+  final Function onToggleFavorites;
   final Building selectedBuilding;
   final bool active;
   final bool showingDropdown;
@@ -12,6 +13,7 @@ class RoomsSelector extends StatelessWidget {
   RoomsSelector({
     Key key,
     @required this.onClick,
+    @required this.onToggleFavorites,
     @required this.selectedBuilding,
     @required this.active,
     @required this.showingDropdown,
@@ -42,7 +44,7 @@ class RoomsSelector extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: onToggleFavorites,
             child: Container(
               width: width / 2 - separatorWidth / 2,
               height: height,
@@ -61,7 +63,12 @@ class RoomsSelector extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
                     "Favorites",
-                    style: Theme.of(context).textTheme.button,
+                    style: !this.active
+                        ? Theme.of(context)
+                            .textTheme
+                            .button
+                            .copyWith(color: blue)
+                        : Theme.of(context).textTheme.button,
                   ),
                 ),
                 Expanded(
@@ -89,7 +96,7 @@ class RoomsSelector extends StatelessWidget {
                 Positioned(
                   left: 20,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: onToggleFavorites,
                     child: Container(
                       width: width / 2 - separatorWidth / 2,
                       height: height,

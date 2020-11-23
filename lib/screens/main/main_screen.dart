@@ -138,7 +138,7 @@ class _MainScreenState extends State<MainScreen> {
         builder: (BuildContext context) {
           return ConfirmCancel(
             type: "logout",
-            onClick: () {},
+            onClick: widget.onLogout,
           );
         });
   }
@@ -302,8 +302,11 @@ class _MainScreenState extends State<MainScreen> {
             checkInTimer: checkInTimer)
         : (selectedRoom != null && selectedPage == "room")
             ? RoomScreen(
-                room: selectedRoom,
+                room: widget.campus
+                    .getBuilding(selectedRoom.building.name)
+                    .getRoom(selectedRoom.name),
                 onClick: selectTable,
+                onToggleFavorite: toggleFavorite,
                 onBack: clearSelection,
               )
             : HomeScreen(
@@ -311,7 +314,7 @@ class _MainScreenState extends State<MainScreen> {
                 onSwitch: switchBuilding,
                 onRoomSelect: selectRoom,
                 onTogglePage: togglePage,
-                onLogout: widget.onLogout,
+                onLogout: logout,
                 buildings: widget.campus.buildings,
                 reservation: widget.reservation != null,
                 user: widget.user,
@@ -319,11 +322,12 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Map<String, dynamic> buildFBRoom(
-      String name, List<Map<String, dynamic>> tables, List<String> favorites) {
+      String name, List<Map<String, dynamic>> tables, List<dynamic> favorites) {
+    print(favorites);
     return {
-      'name': name,
-      'tables': tables,
       'favorites': favorites,
+      'tables': tables,
+      'name': name,
     };
   }
 
@@ -346,6 +350,36 @@ class _MainScreenState extends State<MainScreen> {
       'endTime': endTime,
       'initTime': initTime,
     };
+  }
+
+  void toggleFavorite(Room toggleRoom) {
+    List<Map<String, dynamic>> updatedRooms = List<Map<String, dynamic>>();
+    for (Room room in toggleRoom.building.rooms) {
+      List<dynamic> newFavorites =
+          room.favorites != null ? room.favorites : List<dynamic>();
+      if (room.name == toggleRoom.name) {
+        if (toggleRoom.favorite) {
+          newFavorites.remove(widget.user.istID);
+        } else {
+          newFavorites.add(widget.user.istID);
+        }
+      }
+      updatedRooms.add(buildFBRoom(
+          room.name,
+          room.tables
+              .map((e) => buildFBTable(e.pc, e.name, e.reservation, e.dirty))
+              .toList(),
+          newFavorites));
+    }
+    FirebaseFirestore.instance.collection("tecnico4").get().then((docs) {
+      for (var doc in docs.docs) {
+        if (doc.data()["name"] == toggleRoom.building.name) {
+          doc.reference.update({
+            "rooms": updatedRooms,
+          });
+        }
+      }
+    });
   }
 
   void updateFB(Map<String, dynamic> newRes, bool dirty, StudyTable argtable) {

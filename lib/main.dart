@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
   FenixService fenix = FenixService();
   StreamSubscription _uniLinksSubscription;
   Future<String> fenixToken;
-  bool seenOnboarding = true;
+  bool seenOnboarding = false;
 
   @override
   void initState() {
@@ -74,8 +74,6 @@ class _MyAppState extends State<MyApp> {
     final storage = new FlutterSecureStorage();
 
     String loggedIn = await storage.read(key: "logged_in");
-    print(loggedIn);
-
     if (loggedIn == "true") {
       String token = await storage.read(key: "access_token");
       user = await fenix.fetchPerson(token);
@@ -85,8 +83,6 @@ class _MyAppState extends State<MyApp> {
       } else {
         user = await fenix.fetchPerson(token);
       }
-    } else {
-      fenix.loginIn();
     }
   }
 
@@ -131,6 +127,7 @@ class _MyAppState extends State<MyApp> {
                           campus: Campus(
                             name: "Alameda",
                             buildings: buildings,
+                            user: user,
                           ),
                           onLogout: onLogout,
                           user: user,

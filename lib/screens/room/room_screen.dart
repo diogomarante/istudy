@@ -10,12 +10,14 @@ class RoomScreen extends StatefulWidget {
   final Room room;
   final Function onClick;
   final Function onBack;
+  final Function onToggleFavorite;
 
   RoomScreen({
     Key key,
     @required this.room,
     @required this.onClick,
     @required this.onBack,
+    @required this.onToggleFavorite,
   }) : super(key: key);
 
   @override
@@ -103,7 +105,10 @@ class _RoomScreenState extends State<RoomScreen> {
     return SingleChildScrollView(
       child: Column(children: [
         SizedBox(height: 20),
-        RoomNavigator(onBack: widget.onBack),
+        RoomNavigator(
+            onBack: widget.onBack,
+            onToggleFavorite: widget.onToggleFavorite,
+            room: widget.room),
         SizedBox(height: 50),
         RoomInfo(room: widget.room),
         SizedBox(height: 50),

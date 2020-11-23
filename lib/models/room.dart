@@ -7,7 +7,8 @@ class Room {
   int maxOccupancy;
   int occupancy;
   List<StudyTable> tables = List<StudyTable>();
-  List<String> favorites;
+  List<dynamic> favorites;
+  bool favorite;
   int usage = 0;
   int cleaned = 0;
   int dirty = 0;
@@ -30,6 +31,11 @@ class Room {
       this.PCs += table.pc ? 1 : 0;
       this.pc = this.pc || (table.pc && table.dirty == false);
     }
+    this.favorites = room["favorites"];
+    this.favorite = (this.favorites == null ||
+            !this.favorites.contains(building.user.istID))
+        ? false
+        : true;
   }
 
   void increment() {

@@ -36,10 +36,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool showingDropdown = false;
+  bool showingFavorites = false;
 
   toggleDropdown() {
     this.setState(() {
       showingDropdown = !showingDropdown;
+    });
+  }
+
+  toggleFavorites() {
+    this.setState(() {
+      showingFavorites = !showingFavorites;
     });
   }
 
@@ -70,10 +77,23 @@ class _HomeScreenState extends State<HomeScreen> {
     return cards;
   }
 
+  List<Room> getFavorites() {
+    List<Room> rooms = List<Room>();
+    for (int i = 0; i < widget.buildings.length; i++) {
+      for (int j = 0; j < widget.buildings[i].rooms.length; j++) {
+        if (widget.buildings[i].rooms[j].favorite) {
+          rooms.add(widget.buildings[i].rooms[j]);
+        }
+      }
+    }
+    return rooms;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final cards =
-        renderRooms(widget.selectedBuilding.rooms, widget.onRoomSelect);
+    final rooms =
+        showingFavorites ? getFavorites() : widget.selectedBuilding.rooms;
+    final cards = renderRooms(rooms, widget.onRoomSelect);
     double height = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
       child: Stack(
@@ -111,8 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 RoomsSelector(
                     onClick: toggleDropdown,
                     selectedBuilding: widget.selectedBuilding,
+                    onToggleFavorites: toggleFavorites,
                     showingDropdown: showingDropdown,
-                    active: true),
+                    active: !showingFavorites),
                 SizedBox(
                   height: 20,
                 ),
