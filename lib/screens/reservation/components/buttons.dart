@@ -65,10 +65,13 @@ class Buttons extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10)),
             color: !checkIn && !reservation.table.dirty
                 ? blue
-                : reservation.end.difference(DateTime.now()).inSeconds < 1800
-                    ? blue
-                    : blue.withOpacity(0.2),
-            boxShadow: !checkIn
+                : !checkIn && reservation.table.dirty
+                    ? blue.withOpacity(0.2)
+                    : reservation.end.difference(DateTime.now()).inSeconds <
+                            1800
+                        ? blue
+                        : blue.withOpacity(0.2),
+            boxShadow: !checkIn && !reservation.table.dirty
                 ? [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.3),
@@ -77,7 +80,9 @@ class Buttons extends StatelessWidget {
                       offset: Offset(0, 4),
                     ),
                   ]
-                : reservation.end.difference(DateTime.now()).inSeconds < 1800
+                : checkIn &&
+                        reservation.end.difference(DateTime.now()).inSeconds <
+                            1800
                     ? [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.3),

@@ -4,6 +4,7 @@ import 'package:ist_study/style/colors.dart';
 class ConfirmExit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print("yo");
     return AlertDialog(
       content: Container(
         height: 220,

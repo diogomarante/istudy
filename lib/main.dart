@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ist_study/models/fenix_user.dart';
+import 'package:ist_study/screens/main/components/confirm_exit.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,9 @@ class _MyAppState extends State<MyApp> {
   bool seenOnboarding = false;
   bool ready = false;
   Timer timer;
+
+  int currentStep = 0;
+  String currentPage = "home";
 
   @override
   void initState() {
@@ -102,6 +106,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   onFinishOnboarding() {
+    this.setState(() {
+      currentStep = 0;
+    });
     fenix.loginIn();
   }
 
@@ -109,8 +116,61 @@ class _MyAppState extends State<MyApp> {
     final storage = new FlutterSecureStorage();
     this.setState(() {
       seenOnboarding = false;
+      user = null;
     });
     storage.write(key: 'logged_in', value: "false");
+  }
+
+  void onNext() {
+    this.setState(() {
+      currentStep = currentStep + 1;
+    });
+  }
+
+  void onBack() {
+    this.setState(() {
+      currentStep = currentStep - 1;
+    });
+  }
+
+  void togglePage({String page}) {
+    if (page != null) {
+      this.setState(() {
+        currentPage = page;
+      });
+    } else {
+      this.setState(() {
+        currentPage = currentPage == "home" ? "reservation" : "home";
+      });
+    }
+  }
+
+  Future<bool> showExitDialog() async {
+    print("sup");
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ConfirmExit();
+        });
+  }
+
+  Future<bool> backPressed() async {
+    if (seenOnboarding ?? false) {
+      if (user != null && currentPage != "home") {
+        togglePage(page: "home");
+        return Future.value(false);
+      } else {
+        return Future.value(true);
+      }
+    } else {
+      if (user == null && currentStep != 0) {
+        onBack();
+        return Future.value(false);
+      } else {
+        return Future.value(true);
+      }
+    }
+    //Navigator.of(context).pop(true);
   }
 
   @override
@@ -132,29 +192,37 @@ class _MyAppState extends State<MyApp> {
         for (var building in snapshot.data.docs) {
           buildings.add(building.data());
         }
-        return MaterialApp(
-          theme: theme,
-          home: new Scaffold(
-            body: SafeArea(
-              child: !ready
-                  ? Center(child: CircularProgressIndicator())
-                  : seenOnboarding ?? false
-                      ? user != null
-                          ? MainScreen(
-                              campus: Campus(
-                                name: "Alameda",
-                                buildings: buildings,
+        return WillPopScope(
+          onWillPop: backPressed,
+          child: MaterialApp(
+            theme: theme,
+            home: new Scaffold(
+              body: SafeArea(
+                child: !ready
+                    ? Center(child: CircularProgressIndicator())
+                    : seenOnboarding ?? false
+                        ? user != null
+                            ? MainScreen(
+                                campus: Campus(
+                                  name: "Alameda",
+                                  buildings: buildings,
+                                  user: user,
+                                ),
+                                onLogout: onLogout,
                                 user: user,
-                              ),
-                              onLogout: onLogout,
-                              user: user,
-                            )
-                          : Center(child: CircularProgressIndicator())
-                      : OnboardingScreen(
-                          onFinish: onFinishOnboarding,
-                        ),
+                                currentPage: currentPage,
+                                onTogglePage: togglePage,
+                              )
+                            : Center(child: CircularProgressIndicator())
+                        : OnboardingScreen(
+                            onFinish: onFinishOnboarding,
+                            currentStep: currentStep,
+                            onBack: onBack,
+                            onNext: onNext,
+                          ),
+              ),
+              backgroundColor: backgroundColor,
             ),
-            backgroundColor: backgroundColor,
           ),
         );
       },

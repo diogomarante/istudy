@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ist_study/screens/main/components/confirm_exit.dart';
 import 'file:///C:/Users/diogo/OneDrive/Tecnico/2ano/CCU/ist_study/lib/screens/onboarding/components/onboarding_button.dart';
 import 'file:///C:/Users/diogo/OneDrive/Tecnico/2ano/CCU/ist_study/lib/screens/onboarding/components/onboarding_navigator.dart';
 import 'package:ist_study/style/colors.dart';
@@ -8,10 +7,16 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final Function onFinish;
+  final Function onBack;
+  final Function onNext;
+  final int currentStep;
 
   OnboardingScreen({
     Key key,
     @required this.onFinish,
+    @required this.onBack,
+    @required this.onNext,
+    @required this.currentStep,
   }) : super(key: key);
 
   @override
@@ -19,95 +24,68 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  int currentPage = 0;
-
-  void onNext() {
-    this.setState(() {
-      currentPage = currentPage + 1;
-    });
-  }
-
-  void onBack() {
-    this.setState(() {
-      currentPage = currentPage - 1;
-    });
-  }
-
-  void showExitDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ConfirmExit();
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
-    bool edgePage =
-        pages[currentPage].step == 0 || pages[currentPage].step == 5;
-    return WillPopScope(
-      onWillPop: currentPage == 0 ? showExitDialog : onBack,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(child: SizedBox()),
-                pages[currentPage].image,
-                Expanded(child: SizedBox()),
-                Text(
-                  pages[currentPage].title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline1
-                      .copyWith(color: blue),
-                ),
-                SizedBox(height: 10),
-                edgePage
-                    ? SizedBox(height: 10)
-                    : Text("step " + pages[currentPage].step.toString(),
-                        style: Theme.of(context).textTheme.headline5),
-                Expanded(child: SizedBox()),
-                Padding(
-                  padding: const EdgeInsets.only(left: 50, right: 50),
-                  child: pages[currentPage].description,
-                ),
-                edgePage
-                    ? SizedBox()
-                    : Expanded(
-                        child: Align(
-                          alignment: FractionalOffset.bottomCenter,
-                          child: AnimatedSmoothIndicator(
-                            activeIndex: currentPage - 1,
-                            count: 4,
-                            effect: ColorTransitionEffect(activeDotColor: blue),
-                          ),
+    bool edgePage = pages[widget.currentStep].step == 0 ||
+        pages[widget.currentStep].step == 5;
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: SizedBox()),
+              pages[widget.currentStep].image,
+              Expanded(child: SizedBox()),
+              Text(
+                pages[widget.currentStep].title,
+                style:
+                    Theme.of(context).textTheme.headline1.copyWith(color: blue),
+              ),
+              SizedBox(height: 10),
+              edgePage
+                  ? SizedBox(height: 10)
+                  : Text("step " + pages[widget.currentStep].step.toString(),
+                      style: Theme.of(context).textTheme.headline5),
+              Expanded(child: SizedBox()),
+              Padding(
+                padding: const EdgeInsets.only(left: 50, right: 50),
+                child: pages[widget.currentStep].description,
+              ),
+              edgePage
+                  ? SizedBox()
+                  : Expanded(
+                      child: Align(
+                        alignment: FractionalOffset.bottomCenter,
+                        child: AnimatedSmoothIndicator(
+                          activeIndex: widget.currentStep - 1,
+                          count: 4,
+                          effect: ColorTransitionEffect(activeDotColor: blue),
                         ),
                       ),
-                Expanded(child: SizedBox()),
-                edgePage
-                    ? Expanded(
-                        child: Align(
-                          alignment: FractionalOffset.bottomCenter,
-                          child: OnboardingButton(
-                            step: pages[currentPage].step,
-                            onClick: pages[currentPage].step == 0
-                                ? onNext
-                                : widget.onFinish,
-                          ),
+                    ),
+              Expanded(child: SizedBox()),
+              edgePage
+                  ? Expanded(
+                      child: Align(
+                        alignment: FractionalOffset.bottomCenter,
+                        child: OnboardingButton(
+                          step: pages[widget.currentStep].step,
+                          onClick: pages[widget.currentStep].step == 0
+                              ? widget.onNext
+                              : widget.onFinish,
                         ),
-                      )
-                    : OnboardingNavigator(
-                        onNext: onNext,
-                        onBack: onBack,
-                        step: pages[currentPage].step),
-                SizedBox(height: edgePage ? 50 : 30),
-              ],
-            ),
+                      ),
+                    )
+                  : OnboardingNavigator(
+                      onNext: widget.onNext,
+                      onBack: widget.onBack,
+                      step: pages[widget.currentStep].step),
+              SizedBox(height: edgePage ? 50 : 30),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
