@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ist_study/screens/main/components/confirm_exit.dart';
 import 'file:///C:/Users/diogo/OneDrive/Tecnico/2ano/CCU/ist_study/lib/screens/onboarding/components/onboarding_button.dart';
 import 'file:///C:/Users/diogo/OneDrive/Tecnico/2ano/CCU/ist_study/lib/screens/onboarding/components/onboarding_navigator.dart';
 import 'package:ist_study/style/colors.dart';
@@ -32,68 +33,81 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     });
   }
 
+  void showExitDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ConfirmExit();
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     bool edgePage =
         pages[currentPage].step == 0 || pages[currentPage].step == 5;
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(child: SizedBox()),
-              pages[currentPage].image,
-              Expanded(child: SizedBox()),
-              Text(
-                pages[currentPage].title,
-                style:
-                    Theme.of(context).textTheme.headline1.copyWith(color: blue),
-              ),
-              SizedBox(height: 10),
-              edgePage
-                  ? SizedBox(height: 10)
-                  : Text("step " + pages[currentPage].step.toString(),
-                      style: Theme.of(context).textTheme.headline5),
-              Expanded(child: SizedBox()),
-              Padding(
-                padding: const EdgeInsets.only(left: 50, right: 50),
-                child: pages[currentPage].description,
-              ),
-              edgePage
-                  ? SizedBox()
-                  : Expanded(
-                      child: Align(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: AnimatedSmoothIndicator(
-                          activeIndex: currentPage - 1,
-                          count: 4,
-                          effect: ColorTransitionEffect(activeDotColor: blue),
+    return WillPopScope(
+      onWillPop: currentPage == 0 ? showExitDialog : onBack,
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: SizedBox()),
+                pages[currentPage].image,
+                Expanded(child: SizedBox()),
+                Text(
+                  pages[currentPage].title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      .copyWith(color: blue),
+                ),
+                SizedBox(height: 10),
+                edgePage
+                    ? SizedBox(height: 10)
+                    : Text("step " + pages[currentPage].step.toString(),
+                        style: Theme.of(context).textTheme.headline5),
+                Expanded(child: SizedBox()),
+                Padding(
+                  padding: const EdgeInsets.only(left: 50, right: 50),
+                  child: pages[currentPage].description,
+                ),
+                edgePage
+                    ? SizedBox()
+                    : Expanded(
+                        child: Align(
+                          alignment: FractionalOffset.bottomCenter,
+                          child: AnimatedSmoothIndicator(
+                            activeIndex: currentPage - 1,
+                            count: 4,
+                            effect: ColorTransitionEffect(activeDotColor: blue),
+                          ),
                         ),
                       ),
-                    ),
-              Expanded(child: SizedBox()),
-              edgePage
-                  ? Expanded(
-                      child: Align(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: OnboardingButton(
-                          step: pages[currentPage].step,
-                          onClick: pages[currentPage].step == 0
-                              ? onNext
-                              : widget.onFinish,
+                Expanded(child: SizedBox()),
+                edgePage
+                    ? Expanded(
+                        child: Align(
+                          alignment: FractionalOffset.bottomCenter,
+                          child: OnboardingButton(
+                            step: pages[currentPage].step,
+                            onClick: pages[currentPage].step == 0
+                                ? onNext
+                                : widget.onFinish,
+                          ),
                         ),
-                      ),
-                    )
-                  : OnboardingNavigator(
-                      onNext: onNext,
-                      onBack: onBack,
-                      step: pages[currentPage].step),
-              SizedBox(height: edgePage ? 50 : 30),
-            ],
+                      )
+                    : OnboardingNavigator(
+                        onNext: onNext,
+                        onBack: onBack,
+                        step: pages[currentPage].step),
+                SizedBox(height: edgePage ? 50 : 30),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

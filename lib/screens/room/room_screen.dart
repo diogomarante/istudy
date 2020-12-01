@@ -25,8 +25,10 @@ class RoomScreen extends StatefulWidget {
 }
 
 class _RoomScreenState extends State<RoomScreen> {
-  bool available = false;
-  bool computer = false;
+  bool cleaned = true;
+  bool dirty = true;
+  bool occupied = true;
+  bool computer = true;
   int minutes;
 
   toggleComputer() {
@@ -35,22 +37,52 @@ class _RoomScreenState extends State<RoomScreen> {
     });
   }
 
-  toggleAvailable() {
+  toggleCleaned() {
     this.setState(() {
-      available = !available;
+      cleaned = !cleaned;
+    });
+  }
+
+  toggleDirty() {
+    this.setState(() {
+      dirty = !dirty;
+    });
+  }
+
+  toggleOccupied() {
+    this.setState(() {
+      occupied = !occupied;
     });
   }
 
   List<StudyTable> filterTables(List<StudyTable> tables) {
     List<StudyTable> filteredTables = List<StudyTable>();
     for (int i = 0; i < tables.length; i++) {
-      if (computer && !tables[i].pc) {
-        continue;
+      if (cleaned &&
+          (tables[i].reservation["istID"] == null && !tables[i].dirty)) {
+        if (computer && tables[i].pc) {
+          print(1);
+          filteredTables.add(tables[i]);
+          continue;
+        }
       }
-      if (available && tables[i].reservation["istID"] != null) {
-        continue;
+
+      if (dirty &&
+          (tables[i].reservation["istID"] == null && tables[i].dirty)) {
+        if (computer && tables[i].pc) {
+          print(1);
+          filteredTables.add(tables[i]);
+          continue;
+        }
       }
-      filteredTables.add(tables[i]);
+
+      if (occupied && tables[i].reservation["istID"] != null) {
+        if (computer && tables[i].pc) {
+          print(1);
+          filteredTables.add(tables[i]);
+          continue;
+        }
+      }
     }
 
     filteredTables
@@ -110,11 +142,15 @@ class _RoomScreenState extends State<RoomScreen> {
             room: widget.room),
         SizedBox(height: 50),
         RoomInfo(room: widget.room),
-        SizedBox(height: 50),
+        SizedBox(height: 30),
         TableFilters(
             computer: computer,
-            available: available,
-            toggleAvailable: toggleAvailable,
+            cleaned: cleaned,
+            dirty: dirty,
+            occupied: occupied,
+            toggleCleaned: toggleCleaned,
+            toggleDirty: toggleDirty,
+            toggleOccupied: toggleOccupied,
             toggleComputer: toggleComputer),
         SizedBox(height: 30),
         Column(

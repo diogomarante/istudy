@@ -15,7 +15,6 @@ class ReservationScreen extends StatelessWidget {
   final Function onExtend;
   final Function onCheckIn;
   final Function onBack;
-  final int checkInTimer;
 
   ReservationScreen({
     Key key,
@@ -25,7 +24,6 @@ class ReservationScreen extends StatelessWidget {
     @required this.onExtend,
     @required this.onCheckIn,
     @required this.onBack,
-    @required this.checkInTimer,
   }) : super(key: key);
 
   @override
@@ -130,7 +128,7 @@ class ReservationScreen extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    CheckInTimer(timer: checkInTimer),
+                    CheckInTimer(reservation: reservation),
                   ],
                 )
           : Padding(

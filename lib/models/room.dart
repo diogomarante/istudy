@@ -4,6 +4,7 @@ import 'package:ist_study/models/study_table.dart';
 class Room {
   String name;
   Building building;
+  String floor;
   int maxOccupancy;
   int occupancy;
   List<StudyTable> tables = List<StudyTable>();

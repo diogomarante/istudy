@@ -14,6 +14,7 @@ class HomeScreen extends StatefulWidget {
   final Function onSwitch;
   final Function onRoomSelect;
   final Function onTogglePage;
+  final Function onToggleFavorite;
   final Function onLogout;
   final List<Building> buildings;
   final bool reservation;
@@ -25,6 +26,7 @@ class HomeScreen extends StatefulWidget {
     @required this.onSwitch,
     @required this.onRoomSelect,
     @required this.onTogglePage,
+    @required this.onToggleFavorite,
     @required this.onLogout,
     @required this.buildings,
     @required this.reservation,
@@ -58,14 +60,23 @@ class _HomeScreenState extends State<HomeScreen> {
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                RoomCard(room: rooms[i], onClick: onClick),
-                RoomCard(room: rooms[i + 1], onClick: onClick),
+                RoomCard(
+                    room: rooms[i],
+                    onClick: onClick,
+                    onToggleFavorite: widget.onToggleFavorite),
+                RoomCard(
+                    room: rooms[i + 1],
+                    onClick: onClick,
+                    onToggleFavorite: widget.onToggleFavorite),
               ],
             )
           : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                RoomCard(room: rooms[i], onClick: onClick),
+                RoomCard(
+                    room: rooms[i],
+                    onClick: onClick,
+                    onToggleFavorite: widget.onToggleFavorite),
                 SizedBox(
                   width: 170,
                 )
@@ -101,6 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
         alignment: Alignment.center,
         children: [
           Container(
+            constraints: BoxConstraints(
+              minHeight: height,
+            ),
             child: Column(
               children: [
                 SizedBox(height: 20),

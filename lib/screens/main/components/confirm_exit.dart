@@ -1,38 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ist_study/style/colors.dart';
 
-class ConfirmCancel extends StatelessWidget {
-  final String type;
-  final Function onClick;
-  final Map<String, List<String>> texts = {
-    "switch": [
-      "In order to book a new table, your current reservation will be ",
-      "checked-out",
-      "."
-    ],
-    "cancel": [
-      "Are you sure you want to ",
-      "cancel ",
-      "your current reservation?"
-    ],
-    "checkout": ["Are you sure you want to ", "check-out", "?"],
-    "logout": ["Are you sure you want to ", "logout", "?"],
-  };
-  final Map<String, List<String>> buttons = {
-    "switch": ["No, ignore", "Proceed"],
-    "cancel": ["No, ignore", "Yes, cancel"],
-    "cancelReservation": ["No, ignore", "Yes, cancel"],
-    "cancelSession": ["No, ignore", "Yes, cancel"],
-    "checkout": ["No, stay", "Yes, check-out"],
-    "logout": ["No, stay", "Yes, logout"],
-  };
-
-  ConfirmCancel({
-    Key key,
-    @required this.type,
-    @required this.onClick,
-  }) : super(key: key);
-
+class ConfirmExit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -55,18 +24,18 @@ class ConfirmCancel extends StatelessWidget {
                 ),
                 children: <TextSpan>[
                   TextSpan(
-                    text: texts[type][0],
+                    text: "Are you sure you want to ",
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   TextSpan(
-                    text: texts[type][1],
+                    text: "exit",
                     style: Theme.of(context)
                         .textTheme
                         .headline4
                         .copyWith(color: Colors.orange),
                   ),
                   TextSpan(
-                    text: texts[type][2],
+                    text: "?",
                     style: Theme.of(context).textTheme.headline4,
                   ),
                 ],
@@ -77,8 +46,7 @@ class ConfirmCancel extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pop(context);
-                onClick();
+                Navigator.of(context).pop(true);
               },
               child: Container(
                 height: 50,
@@ -97,7 +65,7 @@ class ConfirmCancel extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    buttons[type][1],
+                    "Exit",
                     style: Theme.of(context)
                         .textTheme
                         .button

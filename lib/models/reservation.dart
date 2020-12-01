@@ -7,10 +7,12 @@ class Reservation {
   int duration; //in minutes
   bool checkIn = false;
   DateTime end;
+  DateTime initTime;
 
   Reservation({@required Map<String, dynamic> res, @required this.table}) {
     duration = res["duration"];
     checkIn = res["checked"];
     end = (res["endTime"] as Timestamp).toDate();
+    initTime = (res["initTime"] as Timestamp).toDate();
   }
 }

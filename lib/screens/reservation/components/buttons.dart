@@ -55,7 +55,7 @@ class Buttons extends StatelessWidget {
       GestureDetector(
         onTap: !checkIn
             ? onCheckIn
-            : reservation.duration < 1800
+            : reservation.end.difference(DateTime.now()).inSeconds < 1800
                 ? () => onExtend(reservation.table)
                 : () {},
         child: Container(
@@ -65,7 +65,7 @@ class Buttons extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10)),
             color: !checkIn && !reservation.table.dirty
                 ? blue
-                : reservation.duration < 1800
+                : reservation.end.difference(DateTime.now()).inSeconds < 1800
                     ? blue
                     : blue.withOpacity(0.2),
             boxShadow: !checkIn
@@ -77,7 +77,7 @@ class Buttons extends StatelessWidget {
                       offset: Offset(0, 4),
                     ),
                   ]
-                : reservation.duration < 1800
+                : reservation.end.difference(DateTime.now()).inSeconds < 1800
                     ? [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.3),

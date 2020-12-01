@@ -10,6 +10,7 @@ import 'package:ist_study/models/study_table.dart';
 import 'package:ist_study/screens/home/home_screen.dart';
 import 'package:ist_study/screens/main/components/confirm_booking.dart';
 import 'package:ist_study/screens/main/components/confirm_cancel.dart';
+import 'package:ist_study/screens/main/components/confirm_exit.dart';
 import 'package:ist_study/screens/reservation/reservation_screen.dart';
 import 'package:ist_study/screens/room/room_screen.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -45,7 +46,6 @@ class _MainScreenState extends State<MainScreen> {
   Room selectedRoom;
   StudyTable selectedTable;
   int seconds = 1800;
-  int checkInTimer = 900;
   String selectedPage;
   Timer chTimer;
   Timer resTimer;
@@ -53,11 +53,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    this.selectedBuilding = "rnl";
+    this.selectedBuilding = "RNL";
     if (widget.reservation != null &&
         !widget.reservation.table.reservation["checked"] &&
-        !widget.reservation.table.dirty &&
-        checkInTimer == 900) {
+        !widget.reservation.table.dirty) {
       selectedPage = "reservation";
       chTimer = startCheckInTimer();
     }
@@ -115,6 +114,15 @@ class _MainScreenState extends State<MainScreen> {
             seconds: seconds,
           );
         });
+  }
+
+  Future<bool> showExitDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ConfirmExit();
+        });
+    return Future.value(true);
   }
 
   void confirmCancel() {
@@ -193,9 +201,14 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Future<bool> showHome() {
+    this.setState(() {
+      selectedPage = "home";
+    });
+    return Future.value(true);
+  }
+
   void makeReservation() async {
-    //String cameraScanResult = await scanner.scan();
-    await scanner.scan();
     updateFB(
         buildFBReservation(
             seconds,
@@ -216,19 +229,29 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void extendReservation() {
-    updateFB(
-        buildFBReservation(
-            widget.reservation.duration + seconds,
-            Timestamp.fromDate(
-                (widget.reservation.table.reservation["endTime"] as Timestamp)
-                    .toDate()
-                    .add(Duration(seconds: seconds))),
-            widget.reservation.table.reservation["initTime"],
-            widget.user.istID,
-            true),
-        true,
-        widget.reservation.table);
+  void extendReservation() async {
+    String cameraScanResult = await scanner.scan();
+    if (cameraScanResult ==
+        (widget.reservation.table.room.building.name +
+            "-" +
+            widget.reservation.table.room.name +
+            "-" +
+            widget.reservation.table.name)) {
+      updateFB(
+          buildFBReservation(
+              widget.reservation.duration + seconds,
+              Timestamp.fromDate(
+                  (widget.reservation.table.reservation["endTime"] as Timestamp)
+                      .toDate()
+                      .add(Duration(seconds: seconds))),
+              widget.reservation.table.reservation["initTime"],
+              widget.user.istID,
+              true),
+          true,
+          widget.reservation.table);
+    } else {
+      print("error");
+    }
   }
 
   void cancelReservation() {
@@ -240,19 +263,25 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void checkIn() async {
-    // String cameraScanResult = await scanner.scan();
-    // print(cameraScanResult);
-    updateFB(
-        buildFBReservation(
-            widget.reservation.duration,
-            Timestamp.fromDate(DateTime.now()
-                .add(Duration(seconds: widget.reservation.duration))),
-            Timestamp.fromDate(DateTime.now()),
-            widget.user.istID,
-            true),
-        true,
-        widget.reservation.table);
-    startReservationTimer();
+    String cameraScanResult = await scanner.scan();
+    if (cameraScanResult ==
+        (widget.reservation.table.room.building.name +
+            "-" +
+            widget.reservation.table.room.name +
+            "-" +
+            widget.reservation.table.name)) {
+      updateFB(
+          buildFBReservation(
+              widget.reservation.duration,
+              Timestamp.fromDate(DateTime.now()
+                  .add(Duration(seconds: widget.reservation.duration))),
+              Timestamp.fromDate(DateTime.now()),
+              widget.user.istID,
+              true),
+          true,
+          widget.reservation.table);
+      startReservationTimer();
+    }
   }
 
   void checkout() {
@@ -282,58 +311,59 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Timer startCheckInTimer() {
+    int diff = widget.reservation.initTime
+        .add(Duration(minutes: 15))
+        .difference(DateTime.now())
+        .inSeconds;
+    print(diff);
     return Timer.periodic(Duration(seconds: 1), (timer) {
-      if (widget.reservation != null &&
-          !widget.reservation.checkIn &&
-          checkInTimer == 0) {
+      if (diff <= 0) {
         cancelReservation();
         timer.cancel();
-        this.setState(() {
-          checkInTimer = 900;
-        });
-      } else if (widget.reservation == null || widget.reservation.checkIn) {
-        timer.cancel();
-        this.setState(() {
-          checkInTimer = 900;
-        });
       } else {
-        this.setState(() {
-          checkInTimer -= 1;
-        });
+        this.setState(() {});
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return (widget.reservation != null && selectedPage == "reservation")
-        ? ReservationScreen(
-            reservation: widget.reservation,
-            onCancel: confirmCancel,
-            onCheckout: confirmCheckout,
-            onExtend: confirmExtend,
-            onCheckIn: checkIn,
-            onBack: togglePage,
-            checkInTimer: checkInTimer)
-        : (selectedRoom != null && selectedPage == "room")
-            ? RoomScreen(
-                room: widget.campus
-                    .getBuilding(selectedRoom.building.name)
-                    .getRoom(selectedRoom.name),
-                onClick: selectTable,
-                onToggleFavorite: toggleFavorite,
-                onBack: clearSelection,
+    return WillPopScope(
+        child: (widget.reservation != null && selectedPage == "reservation")
+            ? ReservationScreen(
+                reservation: widget.reservation,
+                onCancel: confirmCancel,
+                onCheckout: confirmCheckout,
+                onExtend: confirmExtend,
+                onCheckIn: checkIn,
+                onBack: togglePage,
               )
-            : HomeScreen(
-                selectedBuilding: widget.campus.getBuilding(selectedBuilding),
-                onSwitch: switchBuilding,
-                onRoomSelect: selectRoom,
-                onTogglePage: togglePage,
-                onLogout: logout,
-                buildings: widget.campus.buildings,
-                reservation: widget.reservation != null,
-                user: widget.user,
-              );
+            : (selectedRoom != null && selectedPage == "room")
+                ? RoomScreen(
+                    room: widget.campus
+                        .getBuilding(selectedRoom.building.name)
+                        .getRoom(selectedRoom.name),
+                    onClick: selectTable,
+                    onToggleFavorite: toggleFavorite,
+                    onBack: clearSelection,
+                  )
+                : HomeScreen(
+                    selectedBuilding:
+                        widget.campus.getBuilding(selectedBuilding),
+                    onSwitch: switchBuilding,
+                    onRoomSelect: selectRoom,
+                    onTogglePage: togglePage,
+                    onToggleFavorite: toggleFavorite,
+                    onLogout: logout,
+                    buildings: widget.campus.buildings,
+                    reservation: widget.reservation != null,
+                    user: widget.user,
+                  ),
+        onWillPop:
+            ((widget.reservation != null && selectedPage == "reservation") ||
+                    (selectedRoom != null && selectedPage == "room"))
+                ? () => showHome()
+                : () => showExitDialog());
   }
 
   Map<String, dynamic> buildFBRoom(

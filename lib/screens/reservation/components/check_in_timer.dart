@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:ist_study/models/reservation.dart';
 
 class CheckInTimer extends StatelessWidget {
-  final int timer;
+  final Reservation reservation;
 
   CheckInTimer({
     Key key,
-    @required this.timer,
+    @required this.reservation,
   }) : super(key: key);
 
   String buildTimer() {
-    int seconds = timer % 60;
-    int minutes = timer ~/ 60;
+    int diff = reservation.initTime
+        .add(Duration(minutes: 15))
+        .difference(DateTime.now())
+        .inSeconds;
+    int seconds = diff % 60;
+    int minutes = diff ~/ 60;
     int hours = minutes ~/ 60;
     String builder = "0" +
         hours.toString() +

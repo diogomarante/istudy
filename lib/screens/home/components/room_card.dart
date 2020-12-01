@@ -6,10 +6,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 class RoomCard extends StatelessWidget {
   final Room room;
   final Function onClick;
+  final Function onToggleFavorite;
   RoomCard({
     Key key,
     @required this.room,
     @required this.onClick,
+    @required this.onToggleFavorite,
   }) : super(key: key);
 
   @override
