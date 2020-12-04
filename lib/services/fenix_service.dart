@@ -33,7 +33,6 @@ class FenixService {
       Response response = await post(url, headers: headers, body: body);
       if (response.statusCode != 200) return null;
       dynamic responseJson = jsonDecode(response.body);
-      print(responseJson['access_token']);
       storage.write(key: 'access_token', value: responseJson['access_token']);
       storage.write(key: 'refresh_token', value: responseJson['refresh_token']);
       storage.write(key: 'logged_in', value: "true");
@@ -45,8 +44,6 @@ class FenixService {
   }
 
   Future<FenixUser> fetchPerson(String token, {bool retry}) async {
-    print("2");
-
     try {
       final url =
           'https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person?access_token=$token';
@@ -60,11 +57,9 @@ class FenixService {
           refreshAccessToken()
               .then((token) => fetchPerson(token, retry: false));
         }
-        print(jsonDecode(response.body).toString());
         return null;
       }
       dynamic responseJson = jsonDecode(response.body);
-      print(responseJson["username"]);
       return FenixUser(user: responseJson);
     } catch (e) {
       return null;
@@ -82,7 +77,6 @@ class FenixService {
   }
 
   Future<String> refreshAccessToken() async {
-    print("Ah");
     try {
       String refreshToken = await storage.read(key: 'refresh_token');
       final url = 'https://fenix.tecnico.ulisboa.pt/oauth/refresh_token';

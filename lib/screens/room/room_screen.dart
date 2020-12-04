@@ -61,7 +61,6 @@ class _RoomScreenState extends State<RoomScreen> {
       if (cleaned &&
           (tables[i].reservation["istID"] == null && !tables[i].dirty)) {
         if (computer && tables[i].pc) {
-          print(1);
           filteredTables.add(tables[i]);
           continue;
         }
@@ -70,7 +69,6 @@ class _RoomScreenState extends State<RoomScreen> {
       if (dirty &&
           (tables[i].reservation["istID"] == null && tables[i].dirty)) {
         if (computer && tables[i].pc) {
-          print(1);
           filteredTables.add(tables[i]);
           continue;
         }
@@ -78,7 +76,6 @@ class _RoomScreenState extends State<RoomScreen> {
 
       if (occupied && tables[i].reservation["istID"] != null) {
         if (computer && tables[i].pc) {
-          print(1);
           filteredTables.add(tables[i]);
           continue;
         }

@@ -146,7 +146,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<bool> showExitDialog() async {
-    print("sup");
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -214,12 +213,14 @@ class _MyAppState extends State<MyApp> {
                                 onTogglePage: togglePage,
                               )
                             : Center(child: CircularProgressIndicator())
-                        : OnboardingScreen(
-                            onFinish: onFinishOnboarding,
-                            currentStep: currentStep,
-                            onBack: onBack,
-                            onNext: onNext,
-                          ),
+                        : seenOnboarding != null
+                            ? OnboardingScreen(
+                                onFinish: onFinishOnboarding,
+                                currentStep: currentStep,
+                                onBack: onBack,
+                                onNext: onNext,
+                              )
+                            : Center(child: CircularProgressIndicator()),
               ),
               backgroundColor: backgroundColor,
             ),

@@ -73,7 +73,7 @@ class ConfirmCancel extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 40,
+              height: type == "switch" ? 20 : 40,
             ),
             GestureDetector(
               onTap: () {

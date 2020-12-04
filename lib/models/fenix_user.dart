@@ -13,7 +13,5 @@ class FenixUser {
     this.istID = user["username"]?.substring(3);
     this.photo =
         user["photo"] == null ? null : base64Decode(user["photo"]["data"]);
-    print(name);
-    print(istID);
   }
 }

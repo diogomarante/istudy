@@ -54,7 +54,9 @@ class Buttons extends StatelessWidget {
       SizedBox(width: 20),
       GestureDetector(
         onTap: !checkIn
-            ? onCheckIn
+            ? !reservation.table.dirty
+                ? onCheckIn
+                : () {}
             : reservation.end.difference(DateTime.now()).inSeconds < 1800
                 ? () => onExtend(reservation.table)
                 : () {},

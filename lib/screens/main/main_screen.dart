@@ -93,7 +93,6 @@ class _MainScreenState extends State<MainScreen> {
     this.setState(() {
       selectedRoom = room;
     });
-    print(room.name);
     widget.onTogglePage(page: "room");
   }
 
@@ -300,7 +299,6 @@ class _MainScreenState extends State<MainScreen> {
         .add(Duration(minutes: 15))
         .difference(DateTime.now())
         .inSeconds;
-    print(diff);
     return Timer.periodic(Duration(seconds: 1), (timer) {
       if (diff <= 0) {
         cancelReservation();
@@ -313,7 +311,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.currentPage);
     return (widget.reservation != null && widget.currentPage == "reservation")
         ? ReservationScreen(
             reservation: widget.reservation,
@@ -347,7 +344,6 @@ class _MainScreenState extends State<MainScreen> {
 
   Map<String, dynamic> buildFBRoom(
       String name, List<Map<String, dynamic>> tables, List<dynamic> favorites) {
-    print(favorites);
     return {
       'favorites': favorites,
       'tables': tables,
