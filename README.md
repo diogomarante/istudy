@@ -11,3 +11,5 @@ You will need Android Studio installed to run the app from code.
 4. Select an emulator (create one if you have none) and press Run
 5. If the emulator is stuck in a circular progress bar, rerun the app.
 
+## QR codes
+The tables' QR codes are inside the folder SVGs with the following format: <building>-<room_name>-<table_name>
