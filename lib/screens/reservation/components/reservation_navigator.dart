@@ -14,7 +14,7 @@ class ReservationNavigator extends StatelessWidget {
       padding: const EdgeInsets.only(left: 30),
       child: Row(children: [
         GestureDetector(
-          onTap: onBack,
+          onTap: () => onBack("home"),
           child: Icon(
             Icons.arrow_back_ios_rounded,
             color: blue,

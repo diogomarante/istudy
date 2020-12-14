@@ -44,12 +44,12 @@ class MainScreen extends StatefulWidget {
     if (reservation != null &&
         !reservation.table.reservation["checked"] &&
         !reservation.table.dirty) {
-      Timer(Duration(seconds: 1), () => onTogglePage(page: "reservation"));
+      //Timer(Duration(seconds: 1), () => onTogglePage(page: "reservation"));
       shoulStartCheckInTimer = true;
     }
     if (reservation != null && reservation.table.reservation["checked"]) {
       shoulStartReservationTimer = true;
-      Timer(Duration(seconds: 1), () => onTogglePage(page: "reservation"));
+      //Timer(Duration(seconds: 1), () => onTogglePage(page: "reservation"));
     }
   }
 

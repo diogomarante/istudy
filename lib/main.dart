@@ -194,6 +194,7 @@ class _MyAppState extends State<MyApp> {
         return WillPopScope(
           onWillPop: backPressed,
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             theme: theme,
             home: new Scaffold(
               body: SafeArea(
@@ -213,14 +214,12 @@ class _MyAppState extends State<MyApp> {
                                 onTogglePage: togglePage,
                               )
                             : Center(child: CircularProgressIndicator())
-                        : seenOnboarding != null
-                            ? OnboardingScreen(
-                                onFinish: onFinishOnboarding,
-                                currentStep: currentStep,
-                                onBack: onBack,
-                                onNext: onNext,
-                              )
-                            : Center(child: CircularProgressIndicator()),
+                        : OnboardingScreen(
+                            onFinish: onFinishOnboarding,
+                            currentStep: currentStep,
+                            onBack: onBack,
+                            onNext: onNext,
+                          ),
               ),
               backgroundColor: backgroundColor,
             ),
